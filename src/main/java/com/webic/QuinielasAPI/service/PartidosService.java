@@ -32,6 +32,7 @@ public class PartidosService {
 		return partidosRepository.existsById(id);
 	}
 	
+	// Crear y modificar
 	public Partidos save(int id, PartidosDto partidoDto) {
 		
 		Partidos partido = new Partidos();
