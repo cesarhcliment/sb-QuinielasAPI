@@ -1,6 +1,7 @@
 package com.webic.QuinielasAPI.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,5 @@ import com.webic.QuinielasAPI.entity.Jornadas;
 public interface JornadasRepository extends JpaRepository<Jornadas, Integer> {
 	boolean existsByJornada(int jornada);
 	boolean existsByFecha(LocalDate fecha);
+    List<Jornadas> findAllByOrderByJornadaAscFechaAsc();
 }

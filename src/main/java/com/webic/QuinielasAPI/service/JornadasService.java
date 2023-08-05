@@ -16,7 +16,9 @@ public class JornadasService {
 	private JornadasRepository jornadasRepository;
 	
 	public List<Jornadas> getJornadas() {
-		return jornadasRepository.findAll();
+		//return jornadasRepository.findAll();
+		return jornadasRepository.findAllByOrderByJornadaAscFechaAsc();
+		//Hibernate: select j1_0.id,j1_0.fecha,j1_0.jornada from jornadas j1_0 order by j1_0.jornada,j1_0.fecha
 	}
 
 	public Jornadas getJornada(int id) {

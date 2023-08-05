@@ -45,24 +45,38 @@ public class EquiposController {
 	}
 
 	@PostMapping("/new")
-	public ResponseEntity<?> nuevo (@RequestBody EquiposDto equiposDto) {
+	public ResponseEntity<?> nuevo (EquiposDto equiposDto) {
 		if (equiposService.existeNombre(equiposDto.getNombre())) {
 			return new ResponseEntity<>(new Mensaje("Ese equipo ya existe"), HttpStatus.BAD_REQUEST);
 		}
+		String rutaImagen = equiposService.almacenarArchivo(equiposDto.getFoto());
+		equiposDto.setRutaImagen(rutaImagen);
+		
 		Equipos equipo = new Equipos();
 		equipo.setNombre(equiposDto.getNombre());
+		equipo.setRutaImagen(equiposDto.getRutaImagen());
 		Equipos nuevoEquipo = equiposService.save(equipo);
 		return new ResponseEntity<>(new Mensaje("Equipo creado con id "+nuevoEquipo.getId()), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> modificar (@PathVariable("id") int id, @RequestBody EquiposDto equiposDto) {
+	public ResponseEntity<?> modificar (@PathVariable("id") int id, EquiposDto equiposDto) {
 		if (!equiposService.existe(id)) {
 			return new ResponseEntity<>(new Mensaje("No existe el id "+id), HttpStatus.NOT_FOUND);
 		}
-		Equipos equipo = new Equipos();
-		equipo.setId(id);
+		
+		// Obtener los datos por si ya tiene imagen y no se cambia
+		Equipos equipo = equiposService.getEquipo(id);
+		
+		if (equiposDto.getFoto() == null) {
+			equiposDto.setRutaImagen(equipo.getRutaImagen());
+		} else {
+			String rutaImagen = equiposService.almacenarArchivo(equiposDto.getFoto());
+			equiposDto.setRutaImagen(rutaImagen);
+		}
+		
 		equipo.setNombre(equiposDto.getNombre());
+		equipo.setRutaImagen(equiposDto.getRutaImagen());
 		equiposService.save(equipo);
 		return new ResponseEntity<>(new Mensaje("Equipo modificado"), HttpStatus.OK);
 	}
